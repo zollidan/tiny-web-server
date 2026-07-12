@@ -11,49 +11,10 @@
 
 #include "network.h"
 #include "utils.h"
+#include "counter.h"
+#include "http.h"
 
 #define WEBROOT "./webroot"
-#define COUNTER_FILE "counter.txt"
-#define COUNTER_TAG  "<!--#COUNTER-->"
-
-int next_visitor_number() {
-    int count = 0;
-
-    FILE *fp = fopen(COUNTER_FILE, "r");
-    if (fp != NULL) {
-        fscanf(fp, "%d", &count);
-        fclose(fp);
-    }
-    count++;
-    fp = fopen(COUNTER_FILE, "w");
-    if (fp != NULL) {
-        fprintf(fp, "%d", count);
-        fclose(fp);
-    }
-    return count;
-}
-
-int send_string(int sockfd, unsigned char *buffer) {
-    int sent_bytes, bytes_to_sent;
-    bytes_to_sent = strlen(buffer);
-    while (bytes_to_sent > 0)
-    {
-        sent_bytes = send(sockfd, buffer, bytes_to_sent, 0);
-        if (sent_bytes == -1) return 0;
-
-        bytes_to_sent -= sent_bytes;
-        buffer += sent_bytes;
-    }
-    return 1;
-}
-
-void send_not_found(int sockfd) {
-    printf(" 404 Not Found\n");
-    send_string(sockfd, "HTTP/1.0 404 NOT FOUND\r\n");
-    send_string(sockfd, "Server: Tiny Web Server\r\n\r\n");
-    send_string(sockfd, "<html><head><title>404 Not Found</title></head>");
-    send_string(sockfd, "<body><hl>URL not found</hl></body></html>\r\n");
-}
 
 void handle_connection(int sockfd, struct sockaddr_in *client_addr_ptr) {
     unsigned char *ptr, request[500], resource[500];
@@ -110,9 +71,7 @@ void handle_connection(int sockfd, struct sockaddr_in *client_addr_ptr) {
     if (fd == -1) {
         send_not_found(sockfd); 
     } else {
-        printf("\t200 OK\n");
-        send_string(sockfd, "HTTP/1.0 200 OK\r\n");
-        send_string(sockfd, "Server: Tiny Web Server\r\n\r\n");
+        send_ok(sockfd);
 
         if (strncmp((char *)request, "GET", 3) == 0) {
             if ((length = get_file_size(fd)) == -1) {
