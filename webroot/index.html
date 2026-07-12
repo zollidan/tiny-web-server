@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>*** Welcome to MY HOMEPAGE!!! ***</title>
+  </head>
+  <body>
+    <h1>*** WELCOME TO MY HOMEPAGE ON THE WORLD WIDE WEB ***</h1>
+
+    <h3>~*~*~ Home of my project: Tiny Web Server ~*~*~</h3>
+
+    <hr />
+    <p><b>!!! THIS PAGE IS UNDER CONSTRUCTION !!!</b></p>
+    <p>[ *hammering noises* ] [ UNDER CONSTRUCTION ]</p>
+    <hr />
+
+    <h2>&gt;&gt;&gt; ABOUT THE PROJECT &lt;&lt;&lt;</h2>
+
+    <p>
+      Greetings, wanderer! You have reached a page served by my very own
+      <b>web server</b>, written in the <b>C language</b> with my bare hands,
+      without any of those fancy Apaches and other newfangled things!
+    </p>
+
+    <p>
+      Yes indeed, this very page was just delivered to you over the
+      <b>HTTP/1.0</b> protocol by a tiny server only a couple hundred lines of
+      code long!
+    </p>
+
+    <h2>&gt;&gt;&gt; WHAT THE SERVER CAN DO &lt;&lt;&lt;</h2>
+
+    <ul>
+      <li>Listens on port <b>7980</b></li>
+      <li>Accepts connections via BSD sockets</li>
+      <li>Understands <b>GET</b> and <b>HEAD</b> requests</li>
+      <li>Serves files from the webroot directory</li>
+      <li>Honestly says <b>404</b> when a file is not there</li>
+      <li>Written in pure C with no external libraries</li>
+    </ul>
+
+    <h2>&gt;&gt;&gt; HOW IT WORKS &lt;&lt;&lt;</h2>
+
+    <ol>
+      <li>The server creates a socket and <b>bind</b>s it to a port</li>
+      <li>Waits for visitors with <b>listen</b> and <b>accept</b></li>
+      <li>Reads the first line of the request byte by byte</li>
+      <li>Opens the requested file and sends it straight to your browser!</li>
+    </ol>
+
+    <h2>&gt;&gt;&gt; FUTURE PLANS &lt;&lt;&lt;</h2>
+
+    <ul>
+      <li>MIME type support (for now everything is sent as-is!)</li>
+      <li>Visitor logs written to a file</li>
+      <li>Maybe even HTTP/1.1... but no promises</li>
+    </ul>
+
+    <hr />
+
+    <p>
+      You are visitor number: <b><!--#COUNTER--></b>
+    </p>
+
+    <p>
+      [ <a href="index.html">Home</a> ] [ <a href="about.html">About Me</a> ] [
+      <a href="links.html">Cool Links</a> ] [
+      <a href="guestbook.html">Guestbook</a> ]
+    </p>
+
+    <p><i>Send me letters by carrier pigeon or by e-mail!</i></p>
+    <p>
+      <i><a href="https://github.com/zollidan">GitHub</a></i>
+    </p>
+
+    <hr />
+    <p>
+      <i>(c) 2026 zollidan. Handcrafted in vs code.</i>
+    </p>
+  </body>
+</html>
