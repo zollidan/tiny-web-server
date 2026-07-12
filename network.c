@@ -71,13 +71,11 @@ void handle_connection(int sockfd, struct sockaddr_in *client_addr_ptr) {
     if (fd == -1) {
         send_not_found(sockfd); 
     } else {
-        send_ok(sockfd);
+        if ((length = get_file_size(fd)) == -1) {
+            fatal("при получении размера файла ресурса", __FILE__);
+        }
 
         if (strncmp((char *)request, "GET", 3) == 0) {
-            if ((length = get_file_size(fd)) == -1) {
-                fatal("при получении размера файла ресурса", __FILE__);
-            }
-            
             unsigned char *file_buffer = (unsigned char *) malloc(length);
             if (file_buffer == NULL) {
                 fatal("при выделении памяти под чтение ресурса", __FILE__);
@@ -88,16 +86,22 @@ void handle_connection(int sockfd, struct sockaddr_in *client_addr_ptr) {
             unsigned char *tag = memmem(file_buffer, length, COUNTER_TAG, strlen(COUNTER_TAG));
             if (tag != NULL) {
                 char number[16];
+                size_t counter_tag_length = strlen(COUNTER_TAG);
                 snprintf(number, sizeof(number), "%06d", next_visitor_number());
+                size_t number_length = strlen(number);
                 
-                send(sockfd, file_buffer, tag - file_buffer, 0);
-                send(sockfd, number, strlen(number), 0);
-                unsigned char *rest = tag + strlen(COUNTER_TAG);
-                send(sockfd, rest, length - (rest - file_buffer), 0);
+                send_ok(sockfd, "text/html; charset=utf-8", length - counter_tag_length + number_length);
+                send_all(sockfd, file_buffer, tag - file_buffer);
+                send_all(sockfd, number, number_length);
+                unsigned char *rest = tag + counter_tag_length;
+                send_all(sockfd, rest, length - (rest - file_buffer));
             } else {
-                send(sockfd, file_buffer, length, 0);
+                send_ok(sockfd, "text/html; charset=utf-8", length);
+                send_all(sockfd, file_buffer, length);
             }
             free(file_buffer);
+        } else {
+            send_ok(sockfd, "text/html; charset=utf-8", length);
         }
         close(fd);
     }

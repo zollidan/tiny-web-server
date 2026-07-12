@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stddef.h>
 
 typedef enum {
     HTTP_OK = 200,
@@ -21,4 +21,4 @@ typedef struct {
 int send_all(int sockfd, const void *data, size_t length);
 int send_response(int sockfd, const HttpResponse *response);
 void send_not_found(int sockfd);
-void send_ok(int sockfd);
+void send_ok(int sockfd, const char *content_type, size_t body_length);

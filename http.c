@@ -5,7 +5,7 @@
 
 int send_all(int sockfd, const void *data, size_t length)
 {
-    unsigned char *buffer = data;
+    const unsigned char *buffer = data;
     size_t total_sent = 0;
 
     while (total_sent < length) 
@@ -27,6 +27,11 @@ int send_all(int sockfd, const void *data, size_t length)
 int send_response(int sockfd, const HttpResponse *response)
 {
     char headers[512];
+    const char *content_type = response->content_type;
+
+    if (content_type == NULL) {
+        content_type = "application/octet-stream";
+    }
 
     int headers_length = snprintf(
         headers,
@@ -38,7 +43,7 @@ int send_response(int sockfd, const HttpResponse *response)
         "\r\n",
         response->status_code,
         response->status_text,
-        response->content_type,
+        content_type,
         response->body_length
     );
 
@@ -59,7 +64,7 @@ int send_response(int sockfd, const HttpResponse *response)
         );
     }
 
-    return 0;
+    return 1;
 }
 
 void send_not_found(int sockfd)
@@ -81,11 +86,14 @@ void send_not_found(int sockfd)
     send_response(sockfd, &response);
 }
 
-void send_ok(int sockfd) {
+void send_ok(int sockfd, const char *content_type, size_t body_length) {
 
     HttpResponse response = {
         .status_code = HTTP_OK,
         .status_text = "OK",
+        .content_type = content_type,
+        .body = NULL,
+        .body_length = body_length
     };
 
     send_response(sockfd, &response);
